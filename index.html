@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Getting Started</title>
+    <style>
+      table {
+        border:1px solid gray;
+      }
+    </style>
+  </head>
+  <body>
+  <table border='1'>
+    <thead>
+      <tr>
+        <td>id</td>
+        <td>name</td>
+        <td>note</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>Tokyo</td>
+        <td>note</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>
+          <span>Taipei</span>
+        </td>
+        <td>note</td>
+      </tr>
+    </tbody>
+  </table>
+  <script src="main.js"></script>
+  <script>
+    let tableEl = document.querySelector('table');
+    selectionCursor.default.build(tableEl);
+  </script>
+  </body>
+</html>
