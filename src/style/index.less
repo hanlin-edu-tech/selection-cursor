@@ -6,12 +6,24 @@ body {
 
 .selection-decorator {
 
-	.cursor {
-		border: 2px solid #1438ff;
-	}
 
 	td {
 		position: relative;
+
+		&.cursor {
+			&:after {
+				position: absolute;
+				border: 2px solid #1438ff;
+				width:  100%;
+				height: 100%;
+				content: " ";
+				top: 0px;
+				left: 0px;
+				box-sizing: border-box;
+
+			}
+		}
+
 
 		&.selected:after {
 			width:  100%;
