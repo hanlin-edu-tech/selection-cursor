@@ -21,12 +21,20 @@ class Selection {
     this.__ranges = [];
   }
 
+  getRanges() {
+    return this.__ranges;
+  }
+
   setCursor(cursor) {
     this.__cursor = cursor;
   }
 
   getCursor() {
     return this.__cursor;
+  }
+
+  get rangeCount() {
+    return this.__ranges.length;
   }
 
 }

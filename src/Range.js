@@ -5,12 +5,20 @@ class Range {
   
   }
 
-  setStart(el) {
-    this.__startEl = el;
+  get startContainer() {
+    return this.__startEl;
   }
 
-  setEnd(el) {
-    this.__endEl = el;
+  set startContainer(el) {
+    return this.__startEl = el;
+  }
+
+  get endContainer() {
+    return this.__endEl;
+  }
+
+  set endContainer(el) {
+    return this.__endEl = el;
   }
 
 }
