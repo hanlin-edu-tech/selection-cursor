@@ -4,13 +4,15 @@ const isDelegate = (selector, target, sourceEl)=> {
   let currentTarget = target;
 
   while(currentTarget) {
+
     for(let el of els) {
       if (el == currentTarget) {
         return true;
       }
-
-      currentTarget = currentTarget.parentNode;
     }
+
+    if (!currentTarget) break;
+    currentTarget = currentTarget.parentNode;
   }
 
   return false;
@@ -24,7 +26,6 @@ const on = (...args)=> {
   } else {
     [el, eventName, selector, func] = args;
   }
-  console.log(args)
 
   el.addEventListener(eventName, (...eventArgs)=> {
     let evt = eventArgs[0];
@@ -34,7 +35,6 @@ const on = (...args)=> {
     }
 
   });
-  //el, eventName, selector, func
 };
 
 export default { 
