@@ -82,15 +82,6 @@ class TableAdapter extends Adapter{
       }
     });
 
-    this.on('click' , 'span', (evt)=> {
-      evt.preventDefault();
-      console.log(324);
-    });
-
-    this.on('click', (evt)=> {
-      console.log(evt);
-    });
-
   }
 
 }
