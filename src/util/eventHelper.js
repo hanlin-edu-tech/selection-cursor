@@ -11,7 +11,6 @@ const isDelegate = (selector, target, sourceEl)=> {
       }
     }
 
-    if (!currentTarget) break;
     currentTarget = currentTarget.parentNode;
   }
 
