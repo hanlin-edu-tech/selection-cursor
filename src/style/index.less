@@ -6,34 +6,30 @@ body {
 
 .selection-decorator {
 
+	.create-float-layer() {
+		position: absolute;
+		width:  100%;
+		height: 100%;
+		content: " ";
+		top: 0px;
+		left: 0px;
+		box-sizing: border-box;
+	}
 
 	td {
 		position: relative;
 
 		&.cursor {
 			&:after {
-				position: absolute;
 				border: 2px solid #1438ff;
-				width:  100%;
-				height: 100%;
-				content: " ";
-				top: 0px;
-				left: 0px;
-				box-sizing: border-box;
-
+				.create-float-layer();
 			}
 		}
 
 
 		&.selected:after {
-			width:  100%;
-			height: 100%;
-			position: absolute;
 			background: rgba(0,0,255,.3);
-			content: " ";
-			top: 0px;
-			left: 0px;
-			box-sizing: border-box;
+			.create-float-layer();
 			//border: 1px solid blue;
 		}
 	}
