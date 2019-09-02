@@ -3,6 +3,7 @@ import Adapter from './Adapter';
 import MODE from './../mode/index';
 import Range from './../Range';
 import * as STYLE from './../const/STYLE';
+import * as EVENT from './../const/EVENT';
 
 class TableAdapter extends Adapter{
 
@@ -30,6 +31,10 @@ class TableAdapter extends Adapter{
       if (cursor) {
         cursor.el.classList.remove(STYLE.CURSOR);
       }
+
+      this.clearRanges();
+
+      this.clearSelectedElements();
 
       let target = evt.delegatedTarget;
 
@@ -69,9 +74,22 @@ class TableAdapter extends Adapter{
 
   }
 
+  [MODE.CONTINUATION](evt) {
+
+
+  }
+
+  clearSelectedElements() {
+    let els = this.getRootElement().querySelectorAll(`.${STYLE.SELECTED}`);
+
+    for (let el of els) {
+      el.classList.remove(STYLE.SELECTED);
+    }
+  }
+
   registerEvent() {
 
-    this.on('mousedown', 'td', (evt)=> {
+    this.on(EVENT.MOUSE_DOWN, 'td', (evt)=> {
 
       evt.preventDefault();
 

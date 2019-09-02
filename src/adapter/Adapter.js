@@ -55,8 +55,16 @@ class Adapter {
     this.activity.selection.removeRange(range);
   }
 
+  clearRanges() {
+    this.activity.selection.removeRanges();
+  }
+
   getRangeCount() {
     return this.activity.selection.rangeCount;
+  }
+
+  getRanges() {
+    return this.activity.selection.getRanges();
   }
 
 }
