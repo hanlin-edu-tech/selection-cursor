@@ -1,5 +1,7 @@
 
-const isDelegate = (selector, target, sourceEl)=> {
+const getDelegation = (selector, target, sourceEl)=> {
+  if (!selector) return null;
+
   let els = sourceEl.querySelectorAll(selector);
   let currentTarget = target;
 
@@ -7,14 +9,14 @@ const isDelegate = (selector, target, sourceEl)=> {
 
     for(let el of els) {
       if (el == currentTarget) {
-        return true;
+        return currentTarget;
       }
     }
 
     currentTarget = currentTarget.parentNode;
   }
 
-  return false;
+  return null;
 };
 
 const on = (...args)=> {
@@ -29,7 +31,11 @@ const on = (...args)=> {
   el.addEventListener(eventName, (...eventArgs)=> {
     let evt = eventArgs[0];
 
-    if (!selector || isDelegate(selector, evt.target, el)) {
+    let delegatedTarget = getDelegation(selector, evt.target, el);
+
+    if (!selector || delegatedTarget) {
+      evt.delegatedTarget = delegatedTarget;
+
       func.apply(el, eventArgs);
     }
 
