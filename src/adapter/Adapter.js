@@ -67,6 +67,10 @@ class Adapter {
     return this.activity.selection.getRanges();
   }
 
+  refresh() {
+    //do nothing...
+  }
+
 }
 
 export default Adapter;

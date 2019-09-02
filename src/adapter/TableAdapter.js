@@ -20,6 +20,7 @@ class TableAdapter extends Adapter{
       this.setCursorTarget(defaultSelectedEl);
     }
 
+    this.refresh();
     this.registerEvent();
 
   }
@@ -100,6 +101,26 @@ class TableAdapter extends Adapter{
       }
     });
 
+  }
+
+  refresh() {
+    let rows = this.getRootElement().querySelectorAll('tr');
+
+    for (let index in rows) {
+      let row = rows[index];
+
+      if (row instanceof Element) {
+        let cols = row.querySelectorAll('td');
+
+        for (let colIndex in cols) {
+          let col = cols[colIndex];
+          if (col instanceof Element) {
+            col.dataset.rowIndex = index;
+            col.dataset.colIndex = colIndex;
+          }
+        }
+      }
+    }
   }
 
 }
