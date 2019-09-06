@@ -1,10 +1,12 @@
 
 import Selection from './../Selection';
 import MODE from './../mode/index';
+import Observer from './../util/Observer';
 
-class SelectionActivity {
+class SelectionActivity extends Observer {
 
   constructor(el, adapter) {
+    super();
     this.el = el;
     this.adapter = adapter;
 
