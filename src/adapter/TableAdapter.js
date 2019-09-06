@@ -4,6 +4,8 @@ import MODE from './../mode/index';
 import Range from './../Range';
 import * as STYLE from './../const/STYLE';
 import * as EVENT from './../const/EVENT';
+import Point from './../math/Point';
+import Vector from './../math/Vector'; 
 
 class TableAdapter extends Adapter{
 
@@ -77,6 +79,40 @@ class TableAdapter extends Adapter{
 
   [MODE.CONTINUATION](evt) {
 
+    let cursor = this.getCursor();
+
+    let target = evt.delegatedTarget;
+    console.log(evt, target, cursor.el);
+
+    this.clearRanges();
+
+    this.clearSelectedElements();
+
+    let range = new Range();
+
+    range.startContainer = cursor.el;
+    range.endContainer = target;
+
+    this.addRange(range);
+
+    let cursorEl = cursor.el;
+
+    let currentX = parseInt(cursorEl.dataset.colIndex);
+    let currentY = parseInt(cursorEl.dataset.rowIndex);
+
+    let targetX = parseInt(target.dataset.colIndex);
+    let targetY = parseInt(target.dataset.rowIndex);
+    
+    let currentPoint = new Point(currentX, currentY);
+    let targetPoint = new Point(targetX, targetY);
+
+    let vector = new Vector();
+
+    vector.move(currentPoint, targetPoint);
+
+    vector.forEachAsRectangle((x, y)=> {
+      this.getRootElement().querySelector(`td[data-row-index='${y}'][data-col-index='${x}']`).classList.add(STYLE.SELECTED);
+    });
 
   }
 
