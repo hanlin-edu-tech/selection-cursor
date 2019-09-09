@@ -135,7 +135,7 @@ class TableAdapter extends Adapter {
 
   firstSelected() {
 
-    return this.getRootElement().querySelector(`.${STYLE.SELECTED}:not(.${STYLE.DATA_ROW_MARK_INDEX})`);
+    return this.getRootElement().querySelector(`.${STYLE.SELECTED}:not(.${TABLE.DATA_ROW_MARK_INDEX})`);
 
   }
 
