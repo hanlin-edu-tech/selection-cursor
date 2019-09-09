@@ -155,10 +155,35 @@ class TableAdapter extends Adapter {
       this.addRange(range);
     });
 
+    this.on(EVENT.MOUSE_DOWN, `thead td[${TABLE.DATA_COL_MARK_INDEX}]`, (evt)=> {
+      let isFirstEl = true;
+      let target = evt.delegatedTarget;
+      let colMarkIndex = target.dataset.colMarkIndex;
+      let els = this.getRootElement().querySelectorAll(`tbody td[${TABLE.DATA_COL_INDEX}='${colMarkIndex}']`);
+
+      this.clearSelectedElements();
+      this.clearRanges();
+
+      for (let el of els) {
+
+        if (isFirstEl) {
+          this.setCursorTarget(el);
+          isFirstEl = false;
+        }
+
+        let range = new Range();
+        range.startContainer = el;
+        range.endContainer = el
+        this.addRange(range);
+
+        this.selectedEl(el);
+      }
+
+    });
   }
 
   refresh() {
-    let rows = this.getRootElement().querySelectorAll('tr');
+    let rows = this.getRootElement().querySelectorAll('tbody tr');
 
     for (let index in rows) {
       let row = rows[index];

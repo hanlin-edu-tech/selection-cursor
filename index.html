@@ -12,6 +12,9 @@
       table td[data-row-mark-index] {
         background: #dedede;
       }
+      table td[data-col-mark-index] {
+        background: #dedede;
+      }
     </style>
   </head>
   <body>
@@ -19,20 +22,20 @@
     <thead>
       <tr>
         <td> </td>
-        <td>id</td>
-        <td>name</td>
-        <td>note</td>
+        <td data-col-mark-index="0">id</td>
+        <td data-col-mark-index="1">name</td>
+        <td data-col-mark-index="2">note</td>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td data-row-mark-index="1">1</td>
+        <td data-row-mark-index="0">1</td>
         <td>1</td>
         <td>Tokyo</td>
         <td>note</td>
       </tr>
       <tr>
-        <td data-row-mark-index="2">2</td>
+        <td data-row-mark-index="1">2</td>
         <td>2</td>
         <td>
           <span>Taipei</span>
@@ -40,7 +43,7 @@
         <td>note</td>
       </tr>
       <tr>
-        <td data-row-mark-index="3">3</td>
+        <td data-row-mark-index="2">3</td>
         <td>3</td>
         <td>
           <span>okinawa</span>
