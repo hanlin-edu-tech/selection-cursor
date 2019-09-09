@@ -30,14 +30,13 @@ class TableAdapter extends Adapter {
 
   [MODE.STANDARD](evt) {
 
-      this.clearRanges();
+      //this.clearRanges();
 
       this.clearSelectedElements();
 
       let target = evt.delegatedTarget;
 
       this.setCursorTarget(target);
-   
   }
 
   [MODE.OPTION](evt) {
@@ -47,6 +46,23 @@ class TableAdapter extends Adapter {
     let target = evt.delegatedTarget;
 
     if (cursor.el != target) {
+
+      this.selectedEl(cursor.el);
+
+      this.toggleEl(target);
+
+      if (this.isSelected(target)) {
+        this.setCursorTarget(target);
+      } else {
+        this.setCursorTarget(this.firstSelected());
+      }
+
+    } else if (this.countSelected() > 1) {
+      this.unselectedEl(target);
+      this.setCursorTarget(this.firstSelected());
+    }
+
+    /*if (cursor.el != target) {
       let range = this.getRangeByElement(target);
 
       if (!range) {
@@ -56,20 +72,26 @@ class TableAdapter extends Adapter {
         range.endContainer = target;
 
         this.addRange(range);
-        this.selectedEl(target);
       }
       else {
-        this.unselectedEl(target);
         this.removeRange(range);
       }
-    }
 
-    if (this.getRangeCount() > 0) {
-      this.selectedEl(cursor.el);
-    } else {
+      this.toggleEl(target);
+
+      if (this.countSelected() > 0) {
+        this.selectedEl(cursor.el);
+      } else {
+        this.unselectedEl(cursor.el);
+      }
+
+      this.setCursorTarget(target);
+
+    } else if (this.countSelected() > 1){
+
       this.unselectedEl(cursor.el);
-    }
-
+      this.setCursorTarget(this.firstSelected());
+    }*/
   }
 
   [MODE.CONTINUATION](evt) {
@@ -78,16 +100,16 @@ class TableAdapter extends Adapter {
 
     let target = evt.delegatedTarget;
 
-    this.clearRanges();
+    //this.clearRanges();
 
     this.clearSelectedElements();
 
-    let range = new Range();
+    /*let range = new Range();
 
     range.startContainer = cursor.el;
     range.endContainer = target;
 
-    this.addRange(range);
+    this.addRange(range);*/
 
     let cursorEl = cursor.el;
 
@@ -107,6 +129,12 @@ class TableAdapter extends Adapter {
     vector.forEachAsRectangle((x, y)=> {
       this.selectedEl(this.getRootElement().querySelector(`td[${TABLE.DATA_ROW_INDEX}='${y}'][${TABLE.DATA_COL_INDEX}='${x}']`));
     });
+
+  }
+
+  firstSelected() {
+
+    return this.getRootElement().querySelector(`.${STYLE.SELECTED}`);
 
   }
 
@@ -137,22 +165,22 @@ class TableAdapter extends Adapter {
       let isFirstEl = true;
 
       this.clearSelectedElements();
-      this.clearRanges();
-      let range = new Range();
+      //this.clearRanges();
+      //let range = new Range();
 
       while(currentEl = currentEl.nextElementSibling) {
 
         if (isFirstEl) {
           this.setCursorTarget(currentEl);
           isFirstEl = false;
-          range.startContainer = currentEl;
+          //range.startContainer = currentEl;
         }
 
-        range.endContainer = currentEl;
+        //range.endContainer = currentEl;
         this.selectedEl(currentEl);
       }
 
-      this.addRange(range);
+      //this.addRange(range);
     });
 
     this.on(EVENT.MOUSE_DOWN, `thead td[${TABLE.DATA_COL_MARK_INDEX}]`, (evt)=> {
@@ -162,7 +190,7 @@ class TableAdapter extends Adapter {
       let els = this.getRootElement().querySelectorAll(`tbody td[${TABLE.DATA_COL_INDEX}='${colMarkIndex}']`);
 
       this.clearSelectedElements();
-      this.clearRanges();
+      //this.clearRanges();
 
       for (let el of els) {
 
@@ -171,15 +199,39 @@ class TableAdapter extends Adapter {
           isFirstEl = false;
         }
 
-        let range = new Range();
-        range.startContainer = el;
-        range.endContainer = el
-        this.addRange(range);
+        //let range = new Range();
+        //range.startContainer = el;
+        //range.endContainer = el
+        //this.addRange(range);
 
         this.selectedEl(el);
       }
 
     });
+
+    this.on(EVENT.MOUSE_DOWN, `thead td[${TABLE.SELECT_ALL}]`, (evt)=>{
+      this.clearSelectedElements();
+      //this.clearRanges();
+      let isFirstEl = true;
+
+      let els = this.getRootElement().querySelectorAll(`tbody td:not([${TABLE.DATA_ROW_MARK_INDEX}])`);
+      //let range = new Range();
+
+      for (let el of els) {
+
+        if (isFirstEl) {
+          //range.startContainer = el;
+          isFirstEl = false;
+        }
+
+        this.selectedEl(el);
+        //range.endContainer = el
+      }
+
+     //this.addRange(range);
+
+    });
+
   }
 
   refresh() {

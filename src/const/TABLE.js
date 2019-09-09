@@ -7,4 +7,6 @@ export const DATA_ROW_INDEX = 'data-row-index';
 
 export const DATA_COL_INDEX = 'data-col-index';
 
+export const SELECT_ALL = 'data-select-all';
+
 

@@ -84,6 +84,19 @@ class Adapter {
   unselectedEl(el) {
     el.classList.remove(STYLE.SELECTED);
   }
+
+  isSelected(el) {
+    return el.classList.contains(STYLE.SELECTED);
+  }
+
+  toggleEl(el) {
+    this.isSelected(el) ? this.unselectedEl(el): this.selectedEl(el);
+  }
+
+  countSelected() {
+    return this.getRootElement().querySelectorAll(`.${STYLE.SELECTED}`).length;
+  }
+
 }
 
 export default Adapter;
