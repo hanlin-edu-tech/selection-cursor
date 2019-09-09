@@ -17,7 +17,7 @@ class TableAdapter extends Adapter {
 
     el.classList.add(STYLE.SELECTION_DECORATOR);
 
-    let defaultSelectedEl = el.querySelector(`td:not([${TABLE.DATA_ROW_MARK_INDEX}])`);
+    let defaultSelectedEl = el.querySelector(`tbody td:not([${TABLE.DATA_ROW_MARK_INDEX}])`);
 
     if (defaultSelectedEl) {
       this.setCursorTarget(defaultSelectedEl);
@@ -120,7 +120,7 @@ class TableAdapter extends Adapter {
 
   registerEvent() {
 
-    this.on(EVENT.MOUSE_DOWN, `td:not([${TABLE.DATA_ROW_MARK_INDEX}])`, (evt)=> {
+    this.on(EVENT.MOUSE_DOWN, `tbody td:not([${TABLE.DATA_ROW_MARK_INDEX}])`, (evt)=> {
 
       evt.preventDefault();
 
@@ -131,7 +131,7 @@ class TableAdapter extends Adapter {
       }
     });
 
-    this.on(EVENT.MOUSE_DOWN, `td[${TABLE.DATA_ROW_MARK_INDEX}]`, (evt)=> {
+    this.on(EVENT.MOUSE_DOWN, `tbody td[${TABLE.DATA_ROW_MARK_INDEX}]`, (evt)=> {
       let target = evt.delegatedTarget;
       let currentEl = target;
       let isFirstEl = true;
@@ -153,7 +153,6 @@ class TableAdapter extends Adapter {
       }
 
       this.addRange(range);
-
     });
 
   }
@@ -165,7 +164,7 @@ class TableAdapter extends Adapter {
       let row = rows[index];
 
       if (row instanceof Element) {
-        let cols = row.querySelectorAll(`td:not([${TABLE.DATA_ROW_MARK_INDEX}])`);
+        let cols = row.querySelectorAll(`tbody td:not([${TABLE.DATA_ROW_MARK_INDEX}])`);
 
         for (let colIndex in cols) {
           let col = cols[colIndex];
