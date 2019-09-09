@@ -171,8 +171,28 @@ class TableAdapter extends Adapter {
 
   }
 
-  selectedCol(currentEl) {
+  unselectedCol(target) {
+      let colMarkIndex = target.dataset.colMarkIndex;
+      let els = this.getRootElement().querySelectorAll(`tbody td[${TABLE.DATA_COL_INDEX}='${colMarkIndex}']`);
+      for (let el of els) {
+        this.unselectedEl(el);
+      }
+  }
 
+  selectedCol(target, moveCursor = true) {
+      let isFirstEl = true;
+      let colMarkIndex = target.dataset.colMarkIndex;
+      let els = this.getRootElement().querySelectorAll(`tbody td[${TABLE.DATA_COL_INDEX}='${colMarkIndex}']`);
+
+      for (let el of els) {
+
+        if (isFirstEl && moveCursor) {
+          this.setCursorTarget(el);
+          isFirstEl = false;
+        }
+
+        this.selectedEl(el);
+      }
   }
 
   registerEvent() {
@@ -191,7 +211,6 @@ class TableAdapter extends Adapter {
     this.on(EVENT.MOUSE_DOWN, `tbody td[${TABLE.DATA_ROW_MARK_INDEX}]`, (evt)=> {
       let target = evt.delegatedTarget;
       let currentEl = target;
-      let isFirstEl = true;
 
       let mode = this.getCurrentMode();
       let cursor = this.getCursor();
@@ -208,7 +227,6 @@ class TableAdapter extends Adapter {
 
       } else if (mode == MODE.CONTINUATION) {
 
-        
         let startRowIndex = parseInt(cursor.el.dataset.rowIndex);
         let endRowIndex = parseInt(target.dataset.rowMarkIndex);
 
@@ -218,11 +236,9 @@ class TableAdapter extends Adapter {
 
         for (let index = startRowIndex; index != (endRowIndex + inc) ;index +=inc) {
           let el = this.getRootElement().querySelector(`tbody td[${TABLE.DATA_ROW_MARK_INDEX}='${index}']`);
-          console.log(el);
           this.selectedEl(el);
           this.selectedRow(el, false);
         }
-        
 
       } else {
 
@@ -231,24 +247,43 @@ class TableAdapter extends Adapter {
         this.toggleEl(target);
       }
 
-
     });
 
     this.on(EVENT.MOUSE_DOWN, `thead td[${TABLE.DATA_COL_MARK_INDEX}]`, (evt)=> {
-      let isFirstEl = true;
+
+      let mode = this.getCurrentMode();
+      let cursor = this.getCursor();
       let target = evt.delegatedTarget;
-      let colMarkIndex = target.dataset.colMarkIndex;
-      let els = this.getRootElement().querySelectorAll(`tbody td[${TABLE.DATA_COL_INDEX}='${colMarkIndex}']`);
-      this.clearSelectedElements();
 
-      for (let el of els) {
+      if (mode == MODE.OPTION) {
 
-        if (isFirstEl) {
-          this.setCursorTarget(el);
-          isFirstEl = false;
+        if (this.isSelected(target)) {
+          this.unselectedCol(target);
+        } else {
+          this.selectedCol(target);
         }
 
-        this.selectedEl(el);
+        this.toggleEl(target);
+
+      } else if (mode == MODE.CONTINUATION) {
+        let startColIndex = parseInt(cursor.el.dataset.colIndex);
+        let endColIndex = parseInt(target.dataset.colMarkIndex);
+
+        let inc = startColIndex < endColIndex ? 1 : -1;
+
+        this.clearSelectedElements();
+
+        for (let index = startColIndex; index != (endColIndex + inc) ;index +=inc) {
+          let el = this.getRootElement().querySelector(`thead td[${TABLE.DATA_COL_MARK_INDEX}='${index}']`);
+          console.log(el);
+          this.selectedEl(el);
+          this.selectedCol(el, false);
+        }
+
+      } else {
+        this.clearSelectedElements();
+        this.selectedEl(target);
+        this.selectedCol(target);
       }
 
     });
