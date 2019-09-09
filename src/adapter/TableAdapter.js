@@ -137,18 +137,22 @@ class TableAdapter extends Adapter {
       let isFirstEl = true;
 
       this.clearSelectedElements();
+      this.clearRanges();
+      let range = new Range();
 
       while(currentEl = currentEl.nextElementSibling) {
 
         if (isFirstEl) {
-          console.log(currentEl);
           this.setCursorTarget(currentEl);
           isFirstEl = false;
+          range.startContainer = currentEl;
         }
 
+        range.endContainer = currentEl;
         this.selectedEl(currentEl);
-
       }
+
+      this.addRange(range);
 
     });
 
