@@ -4,10 +4,11 @@ import MODE from './../mode/index';
 import Range from './../Range';
 import * as STYLE from './../const/STYLE';
 import * as EVENT from './../const/EVENT';
+import * as TABLE from './../const/TABLE';
 import Point from './../math/Point';
 import Vector from './../math/Vector'; 
 
-class TableAdapter extends Adapter{
+class TableAdapter extends Adapter {
 
 
   init() {
@@ -16,7 +17,7 @@ class TableAdapter extends Adapter{
 
     el.classList.add(STYLE.SELECTION_DECORATOR);
 
-    let defaultSelectedEl = el.querySelector('td');
+    let defaultSelectedEl = el.querySelector(`td:not([${TABLE.DATA_ROW_MARK_INDEX}])`);
 
     if (defaultSelectedEl) {
       this.setCursorTarget(defaultSelectedEl);
@@ -28,12 +29,6 @@ class TableAdapter extends Adapter{
   }
 
   [MODE.STANDARD](evt) {
-
-      let cursor = this.getCursor();
-
-      if (cursor) {
-        cursor.el.classList.remove(STYLE.CURSOR);
-      }
 
       this.clearRanges();
 
@@ -61,18 +56,18 @@ class TableAdapter extends Adapter{
         range.endContainer = target;
 
         this.addRange(range);
-        target.classList.add(STYLE.SELECTED);
+        this.selectedEl(target);
       }
       else {
-        target.classList.remove(STYLE.SELECTED);
+        this.unselectedEl(target);
         this.removeRange(range);
       }
     }
 
     if (this.getRangeCount() > 0) {
-      cursor.el.classList.add(STYLE.SELECTED);
+      this.selectedEl(cursor.el);
     } else {
-      cursor.el.classList.remove(STYLE.SELECTED);
+      this.unselectedEl(cursor.el);
     }
 
   }
@@ -82,7 +77,6 @@ class TableAdapter extends Adapter{
     let cursor = this.getCursor();
 
     let target = evt.delegatedTarget;
-    console.log(evt, target, cursor.el);
 
     this.clearRanges();
 
@@ -111,7 +105,7 @@ class TableAdapter extends Adapter{
     vector.move(currentPoint, targetPoint);
 
     vector.forEachAsRectangle((x, y)=> {
-      this.getRootElement().querySelector(`td[data-row-index='${y}'][data-col-index='${x}']`).classList.add(STYLE.SELECTED);
+      this.selectedEl(this.getRootElement().querySelector(`td[${TABLE.DATA_ROW_INDEX}='${y}'][${TABLE.DATA_COL_INDEX}='${x}']`));
     });
 
   }
@@ -120,13 +114,13 @@ class TableAdapter extends Adapter{
     let els = this.getRootElement().querySelectorAll(`.${STYLE.SELECTED}`);
 
     for (let el of els) {
-      el.classList.remove(STYLE.SELECTED);
+      this.unselectedEl(el);
     }
   }
 
   registerEvent() {
 
-    this.on(EVENT.MOUSE_DOWN, 'td', (evt)=> {
+    this.on(EVENT.MOUSE_DOWN, `td:not([${TABLE.DATA_ROW_MARK_INDEX}])`, (evt)=> {
 
       evt.preventDefault();
 
@@ -135,6 +129,27 @@ class TableAdapter extends Adapter{
       if (this[mode]) {
         this[mode](evt);
       }
+    });
+
+    this.on(EVENT.MOUSE_DOWN, `td[${TABLE.DATA_ROW_MARK_INDEX}]`, (evt)=> {
+      let target = evt.delegatedTarget;
+      let currentEl = target;
+      let isFirstEl = true;
+
+      this.clearSelectedElements();
+
+      while(currentEl = currentEl.nextElementSibling) {
+
+        if (isFirstEl) {
+          console.log(currentEl);
+          this.setCursorTarget(currentEl);
+          isFirstEl = false;
+        }
+
+        this.selectedEl(currentEl);
+
+      }
+
     });
 
   }
@@ -146,7 +161,7 @@ class TableAdapter extends Adapter{
       let row = rows[index];
 
       if (row instanceof Element) {
-        let cols = row.querySelectorAll('td');
+        let cols = row.querySelectorAll(`td:not([${TABLE.DATA_ROW_MARK_INDEX}])`);
 
         for (let colIndex in cols) {
           let col = cols[colIndex];

@@ -9,12 +9,16 @@
       table td {
         padding:10px;
       }
+      table td[data-row-mark-index] {
+        background: #dedede;
+      }
     </style>
   </head>
   <body>
   <table border='1'>
     <thead>
       <tr>
+        <td data-row-mark-index="1">1</td>
         <td>id</td>
         <td>name</td>
         <td>note</td>
@@ -22,11 +26,13 @@
     </thead>
     <tbody>
       <tr>
+        <td data-row-mark-index="2">2</td>
         <td>1</td>
         <td>Tokyo</td>
         <td>note</td>
       </tr>
       <tr>
+        <td data-row-mark-index="3">3</td>
         <td>2</td>
         <td>
           <span>Taipei</span>

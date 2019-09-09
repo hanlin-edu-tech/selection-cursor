@@ -14,6 +14,12 @@ class Adapter {
   }
 
   setCursorTarget(cursorTarget) {
+    let lastCursor = this.getCursor();
+
+    if (lastCursor) {
+      lastCursor.el.classList.remove(STYLE.CURSOR);
+    }
+
     let cursor = new Cursor(cursorTarget);
     cursorTarget.classList.add(STYLE.CURSOR);
     this.activity.selection.setCursor(cursor);
@@ -71,6 +77,13 @@ class Adapter {
     //do nothing...
   }
 
+  selectedEl(el) {
+    el.classList.add(STYLE.SELECTED);
+  }
+
+  unselectedEl(el) {
+    el.classList.remove(STYLE.SELECTED);
+  }
 }
 
 export default Adapter;
