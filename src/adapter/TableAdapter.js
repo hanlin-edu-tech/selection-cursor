@@ -134,7 +134,7 @@ class TableAdapter extends Adapter {
 
   firstSelected() {
 
-    return this.getRootElement().querySelector(`.${STYLE.SELECTED}`);
+    return this.getRootElement().querySelector(`.${STYLE.SELECTED}:not(.${STYLE.DATA_ROW_MARK_INDEX})`);
 
   }
 
@@ -144,6 +144,35 @@ class TableAdapter extends Adapter {
     for (let el of els) {
       this.unselectedEl(el);
     }
+  }
+
+  unselectedRow(currentEl) {
+
+    while(currentEl = currentEl.nextElementSibling) {
+
+      this.unselectedEl(currentEl);
+    }
+
+  }
+
+  selectedRow(currentEl, moveCursor = true) {
+    let isFirstEl = true;
+
+    while(currentEl = currentEl.nextElementSibling) {
+
+        if (isFirstEl && moveCursor) {
+          this.setCursorTarget(currentEl);
+          isFirstEl = false;
+        }
+
+        this.selectedEl(currentEl);
+
+    }
+
+  }
+
+  selectedCol(currentEl) {
+
   }
 
   registerEvent() {
@@ -164,23 +193,45 @@ class TableAdapter extends Adapter {
       let currentEl = target;
       let isFirstEl = true;
 
-      this.clearSelectedElements();
-      //this.clearRanges();
-      //let range = new Range();
+      let mode = this.getCurrentMode();
+      let cursor = this.getCursor();
 
-      while(currentEl = currentEl.nextElementSibling) {
+      if (mode == MODE.OPTION) {
 
-        if (isFirstEl) {
-          this.setCursorTarget(currentEl);
-          isFirstEl = false;
-          //range.startContainer = currentEl;
+        if (this.isSelected(target)) {
+          this.unselectedRow(target);
+        } else {
+          this.selectedRow(currentEl);
         }
 
-        //range.endContainer = currentEl;
-        this.selectedEl(currentEl);
+        this.toggleEl(target);
+
+      } else if (mode == MODE.CONTINUATION) {
+
+        
+        let startRowIndex = parseInt(cursor.el.dataset.rowIndex);
+        let endRowIndex = parseInt(target.dataset.rowMarkIndex);
+
+        let inc = startRowIndex < endRowIndex ? 1 : -1;
+
+        this.clearSelectedElements();
+
+        for (let index = startRowIndex; index != (endRowIndex + inc) ;index +=inc) {
+          let el = this.getRootElement().querySelector(`tbody td[${TABLE.DATA_ROW_MARK_INDEX}='${index}']`);
+          console.log(el);
+          this.selectedEl(el);
+          this.selectedRow(el, false);
+        }
+        
+
+      } else {
+
+        this.clearSelectedElements();
+        this.selectedRow(currentEl);
+        this.toggleEl(target);
       }
 
-      //this.addRange(range);
+
     });
 
     this.on(EVENT.MOUSE_DOWN, `thead td[${TABLE.DATA_COL_MARK_INDEX}]`, (evt)=> {
@@ -188,9 +239,7 @@ class TableAdapter extends Adapter {
       let target = evt.delegatedTarget;
       let colMarkIndex = target.dataset.colMarkIndex;
       let els = this.getRootElement().querySelectorAll(`tbody td[${TABLE.DATA_COL_INDEX}='${colMarkIndex}']`);
-
       this.clearSelectedElements();
-      //this.clearRanges();
 
       for (let el of els) {
 
@@ -199,11 +248,6 @@ class TableAdapter extends Adapter {
           isFirstEl = false;
         }
 
-        //let range = new Range();
-        //range.startContainer = el;
-        //range.endContainer = el
-        //this.addRange(range);
-
         this.selectedEl(el);
       }
 
@@ -211,24 +255,18 @@ class TableAdapter extends Adapter {
 
     this.on(EVENT.MOUSE_DOWN, `thead td[${TABLE.SELECT_ALL}]`, (evt)=>{
       this.clearSelectedElements();
-      //this.clearRanges();
       let isFirstEl = true;
 
       let els = this.getRootElement().querySelectorAll(`tbody td:not([${TABLE.DATA_ROW_MARK_INDEX}])`);
-      //let range = new Range();
 
       for (let el of els) {
 
         if (isFirstEl) {
-          //range.startContainer = el;
           isFirstEl = false;
         }
 
         this.selectedEl(el);
-        //range.endContainer = el
       }
-
-     //this.addRange(range);
 
     });
 
