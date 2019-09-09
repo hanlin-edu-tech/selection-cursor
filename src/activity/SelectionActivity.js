@@ -39,7 +39,6 @@ class SelectionActivity extends Observer {
         this.mode = availableMode;
       }
 
-      console.log(evt);
     });
 
     window.addEventListener('keyup', (evt)=> {
@@ -47,7 +46,6 @@ class SelectionActivity extends Observer {
       if (this.keyModeMap.has(evt.which)) {
         this.mode = MODE.STANDARD;
       }
-      console.log(evt);
     });
 
   }

@@ -97,6 +97,10 @@ class Adapter {
     return this.getRootElement().querySelectorAll(`.${STYLE.SELECTED}`).length;
   }
 
+  getSelectedFields() {
+    return [];
+  }  
+
 }
 
 export default Adapter;

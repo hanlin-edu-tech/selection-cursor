@@ -92,6 +92,7 @@ class TableAdapter extends Adapter {
       this.unselectedEl(cursor.el);
       this.setCursorTarget(this.firstSelected());
     }*/
+
   }
 
   [MODE.CONTINUATION](evt) {
@@ -275,7 +276,6 @@ class TableAdapter extends Adapter {
 
         for (let index = startColIndex; index != (endColIndex + inc) ;index +=inc) {
           let el = this.getRootElement().querySelector(`thead td[${TABLE.DATA_COL_MARK_INDEX}='${index}']`);
-          console.log(el);
           this.selectedEl(el);
           this.selectedCol(el, false);
         }
@@ -325,6 +325,20 @@ class TableAdapter extends Adapter {
         }
       }
     }
+  }
+
+  getSelectedFields() {
+    let result = [];
+    let els = this.getRootElement().querySelectorAll(`tbody td.${STYLE.SELECTED}:not([${TABLE.DATA_ROW_MARK_INDEX}]`);
+
+    for(let el of els) {
+      result.push({
+        rowIndex:el.dataset.rowIndex,
+        colIndex:el.dataset.colIndex,
+        el:el
+      });
+    }
+    return result;
   }
 
 }
