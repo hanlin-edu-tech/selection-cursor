@@ -329,7 +329,7 @@ class TableAdapter extends Adapter {
 
   getSelectedFields() {
     let result = [];
-    let els = this.getRootElement().querySelectorAll(`tbody td.${STYLE.SELECTED}:not([${TABLE.DATA_ROW_MARK_INDEX}]`);
+    let els = this.getRootElement().querySelectorAll(`tbody td.${STYLE.SELECTED}:not([${TABLE.DATA_ROW_MARK_INDEX}]), tbody td.cursor`);
 
     for(let el of els) {
       result.push({
