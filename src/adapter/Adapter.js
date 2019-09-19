@@ -34,6 +34,11 @@ class Adapter {
     eventHelper.on(...eventArgs);
   }
 
+  off(...args) {
+    let eventArgs = [this.activity.el, ...args];
+    eventHelper.off(...eventArgs);
+  }
+
   getCurrentMode() {
     return this.activity.mode;
   }
@@ -100,6 +105,10 @@ class Adapter {
   getSelectedFields() {
     return [];
   }  
+
+  dispose() {
+
+  }
 
 }
 

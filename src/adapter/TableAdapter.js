@@ -23,8 +23,120 @@ class TableAdapter extends Adapter {
       this.setCursorTarget(defaultSelectedEl);
     }
 
+    this.events = {
+      onCell:this.onCell.bind(this),
+      onRow:this.onRow.bind(this),
+      onMode:this.onMode.bind(this),
+      onSelectedAll:this.onSelectedAll.bind(this)
+    };
     this.refresh();
     this.registerEvent();
+
+  }
+
+  onMode(evt) {
+    evt.preventDefault();
+
+    let mode = this.getCurrentMode();
+
+    if (this[mode]) {
+      this[mode](evt);
+    }
+  }
+
+  onRow(evt) {
+
+    let target = evt.delegatedTarget;
+    let currentEl = target;
+
+    let mode = this.getCurrentMode();
+    let cursor = this.getCursor();
+
+    if (mode == MODE.OPTION) {
+
+      if (this.isSelected(target)) {
+        this.unselectedRow(target);
+      } else {
+        this.selectedRow(currentEl);
+      }
+
+      this.toggleEl(target);
+
+    } else if (mode == MODE.CONTINUATION) {
+
+      let startRowIndex = parseInt(cursor.el.dataset.rowIndex);
+      let endRowIndex = parseInt(target.dataset.rowMarkIndex);
+
+      let inc = startRowIndex < endRowIndex ? 1 : -1;
+
+      this.clearSelectedElements();
+
+      for (let index = startRowIndex; index != (endRowIndex + inc) ;index +=inc) {
+        let el = this.getRootElement().querySelector(`tbody td[${TABLE.DATA_ROW_MARK_INDEX}='${index}']`);
+        this.selectedEl(el);
+        this.selectedRow(el, false);
+      }
+
+    } else {
+
+      this.clearSelectedElements();
+      this.selectedRow(currentEl);
+      this.toggleEl(target);
+    }
+
+  }
+
+  onCell(evt) {
+    let mode = this.getCurrentMode();
+    let cursor = this.getCursor();
+    let target = evt.delegatedTarget;
+
+    if (mode == MODE.OPTION) {
+
+      if (this.isSelected(target)) {
+        this.unselectedCol(target);
+      } else {
+        this.selectedCol(target);
+      }
+
+      this.toggleEl(target);
+
+    } else if (mode == MODE.CONTINUATION) {
+      let startColIndex = parseInt(cursor.el.dataset.colIndex);
+      let endColIndex = parseInt(target.dataset.colMarkIndex);
+
+      let inc = startColIndex < endColIndex ? 1 : -1;
+
+      this.clearSelectedElements();
+
+      for (let index = startColIndex; index != (endColIndex + inc) ;index +=inc) {
+        let el = this.getRootElement().querySelector(`thead td[${TABLE.DATA_COL_MARK_INDEX}='${index}']`);
+        this.selectedEl(el);
+        this.selectedCol(el, false);
+      }
+
+    } else {
+      this.clearSelectedElements();
+      this.selectedEl(target);
+      this.selectedCol(target);
+    }
+  }
+
+  onSelectedAll(evt) {
+
+    this.clearSelectedElements();
+    let isFirstEl = true;
+
+    let els = this.getRootElement().querySelectorAll(`tbody td:not([${TABLE.DATA_ROW_MARK_INDEX}])`);
+
+    for (let el of els) {
+
+      if (isFirstEl) {
+        isFirstEl = false;
+      }
+
+      this.selectedEl(el);
+    }
 
   }
 
@@ -198,112 +310,13 @@ class TableAdapter extends Adapter {
 
   registerEvent() {
 
-    this.on(EVENT.MOUSE_DOWN, `tbody td:not([${TABLE.DATA_ROW_MARK_INDEX}])`, (evt)=> {
+    this.on(EVENT.MOUSE_DOWN, `tbody td:not([${TABLE.DATA_ROW_MARK_INDEX}])`, this.events.onMode);
 
-      evt.preventDefault();
+    this.on(EVENT.MOUSE_DOWN, `tbody td[${TABLE.DATA_ROW_MARK_INDEX}]`, this.events.onRow);
 
-      let mode = this.getCurrentMode();
+    this.on(EVENT.MOUSE_DOWN, `thead td[${TABLE.DATA_COL_MARK_INDEX}]`, this.events.onCell);
 
-      if (this[mode]) {
-        this[mode](evt);
-      }
-    });
-
-    this.on(EVENT.MOUSE_DOWN, `tbody td[${TABLE.DATA_ROW_MARK_INDEX}]`, (evt)=> {
-      let target = evt.delegatedTarget;
-      let currentEl = target;
-
-      let mode = this.getCurrentMode();
-      let cursor = this.getCursor();
-
-      if (mode == MODE.OPTION) {
-
-        if (this.isSelected(target)) {
-          this.unselectedRow(target);
-        } else {
-          this.selectedRow(currentEl);
-        }
-
-        this.toggleEl(target);
-
-      } else if (mode == MODE.CONTINUATION) {
-
-        let startRowIndex = parseInt(cursor.el.dataset.rowIndex);
-        let endRowIndex = parseInt(target.dataset.rowMarkIndex);
-
-        let inc = startRowIndex < endRowIndex ? 1 : -1;
-
-        this.clearSelectedElements();
-
-        for (let index = startRowIndex; index != (endRowIndex + inc) ;index +=inc) {
-          let el = this.getRootElement().querySelector(`tbody td[${TABLE.DATA_ROW_MARK_INDEX}='${index}']`);
-          this.selectedEl(el);
-          this.selectedRow(el, false);
-        }
-
-      } else {
-
-        this.clearSelectedElements();
-        this.selectedRow(currentEl);
-        this.toggleEl(target);
-      }
-
-    });
-
-    this.on(EVENT.MOUSE_DOWN, `thead td[${TABLE.DATA_COL_MARK_INDEX}]`, (evt)=> {
-
-      let mode = this.getCurrentMode();
-      let cursor = this.getCursor();
-      let target = evt.delegatedTarget;
-
-      if (mode == MODE.OPTION) {
-
-        if (this.isSelected(target)) {
-          this.unselectedCol(target);
-        } else {
-          this.selectedCol(target);
-        }
-
-        this.toggleEl(target);
-
-      } else if (mode == MODE.CONTINUATION) {
-        let startColIndex = parseInt(cursor.el.dataset.colIndex);
-        let endColIndex = parseInt(target.dataset.colMarkIndex);
-
-        let inc = startColIndex < endColIndex ? 1 : -1;
-
-        this.clearSelectedElements();
-
-        for (let index = startColIndex; index != (endColIndex + inc) ;index +=inc) {
-          let el = this.getRootElement().querySelector(`thead td[${TABLE.DATA_COL_MARK_INDEX}='${index}']`);
-          this.selectedEl(el);
-          this.selectedCol(el, false);
-        }
-
-      } else {
-        this.clearSelectedElements();
-        this.selectedEl(target);
-        this.selectedCol(target);
-      }
-
-    });
-
-    this.on(EVENT.MOUSE_DOWN, `thead td[${TABLE.SELECT_ALL}]`, (evt)=>{
-      this.clearSelectedElements();
-      let isFirstEl = true;
-
-      let els = this.getRootElement().querySelectorAll(`tbody td:not([${TABLE.DATA_ROW_MARK_INDEX}])`);
-
-      for (let el of els) {
-
-        if (isFirstEl) {
-          isFirstEl = false;
-        }
-
-        this.selectedEl(el);
-      }
-
-    });
+    this.on(EVENT.MOUSE_DOWN, `thead td[${TABLE.SELECT_ALL}]`, this.events.onSelectedAll);
 
   }
 
@@ -339,6 +352,17 @@ class TableAdapter extends Adapter {
       });
     }
     return result;
+  }
+
+  dispose() {
+    this.off(EVENT.MOUSE_DOWN, `tbody td:not([${TABLE.DATA_ROW_MARK_INDEX}])`, this.events.onMode);
+
+    this.off(EVENT.MOUSE_DOWN, `tbody td[${TABLE.DATA_ROW_MARK_INDEX}]`, this.events.onRow);
+
+    this.off(EVENT.MOUSE_DOWN, `thead td[${TABLE.DATA_COL_MARK_INDEX}]`, this.events.onCell);
+
+    this.off(EVENT.MOUSE_DOWN, `thead td[${TABLE.SELECT_ALL}]`, this.events.onSelectedAll);
+
   }
 
 }
