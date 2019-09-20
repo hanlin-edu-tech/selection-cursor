@@ -1,9 +1,17 @@
 {
   "name": "selection-cursor",
+  "version":"0.0.1",
+  "author": "Sparrow.jang",
+  "main":"dist/main.js",
+  "description":"Decorate a selection cursor feature to element.",
   "scripts": {
     "build": "webpack",
     "start:dev": "webpack-dev-server"
   },
+  "keywords":[
+    "selection",
+    "cursor"
+  ],
   "devDependencies": {
     "@babel/core": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
@@ -15,5 +23,6 @@
     "webpack": "^4.39.2",
     "webpack-cli": "^3.3.7",
     "webpack-dev-server": "^3.8.0"
-  }
+  },
+  "license": "MIT"
 }
