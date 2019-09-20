@@ -310,13 +310,13 @@ class TableAdapter extends Adapter {
 
   registerEvent() {
 
-    this.on(EVENT.MOUSE_DOWN, `tbody td:not([${TABLE.DATA_ROW_MARK_INDEX}])`, this.events.onMode);
+    this.on(EVENT.MOUSE_DOWN, TABLE.ON_CELL_SELECTOR, this.events.onMode);
 
-    this.on(EVENT.MOUSE_DOWN, `tbody td[${TABLE.DATA_ROW_MARK_INDEX}]`, this.events.onRow);
+    this.on(EVENT.MOUSE_DOWN, TABLE.ON_ROW_MARK_SELECTOR, this.events.onRow);
 
-    this.on(EVENT.MOUSE_DOWN, `thead td[${TABLE.DATA_COL_MARK_INDEX}]`, this.events.onCell);
+    this.on(EVENT.MOUSE_DOWN, TABLE.ON_CELL_MARK_SELECTOR, this.events.onCell);
 
-    this.on(EVENT.MOUSE_DOWN, `thead td[${TABLE.SELECT_ALL}]`, this.events.onSelectedAll);
+    this.on(EVENT.MOUSE_DOWN, TABLE.ON_SELECT_ALL_SELECTOR, this.events.onSelectedAll);
 
   }
 
@@ -355,13 +355,18 @@ class TableAdapter extends Adapter {
   }
 
   dispose() {
-    this.off(EVENT.MOUSE_DOWN, `tbody td:not([${TABLE.DATA_ROW_MARK_INDEX}])`, this.events.onMode);
 
-    this.off(EVENT.MOUSE_DOWN, `tbody td[${TABLE.DATA_ROW_MARK_INDEX}]`, this.events.onRow);
+    super.dispose();
 
-    this.off(EVENT.MOUSE_DOWN, `thead td[${TABLE.DATA_COL_MARK_INDEX}]`, this.events.onCell);
+    this.clearSelectedElements();
 
-    this.off(EVENT.MOUSE_DOWN, `thead td[${TABLE.SELECT_ALL}]`, this.events.onSelectedAll);
+    this.off(EVENT.MOUSE_DOWN, TABLE.ON_CELL_SELECTOR, this.events.onMode);
+
+    this.off(EVENT.MOUSE_DOWN, TABLE.ON_ROW_MARK_SELECTOR, this.events.onRow);
+
+    this.off(EVENT.MOUSE_DOWN, TABLE.ON_CELL_MARK_SELECTOR, this.events.onCell);
+
+    this.off(EVENT.MOUSE_DOWN, TABLE.ON_SELECT_ALL_SELECTOR, this.events.onSelectedAll);
 
   }
 

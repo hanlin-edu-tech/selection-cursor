@@ -107,7 +107,11 @@ class Adapter {
   }  
 
   dispose() {
+    let cursor = this.getCursor();
 
+    if (cursor) {
+      cursor.el.classList.remove(STYLE.CURSOR);
+    }
   }
 
 }
