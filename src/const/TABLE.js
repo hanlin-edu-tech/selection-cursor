@@ -13,8 +13,8 @@ export const ON_CELL_SELECTOR = `tbody td:not([${DATA_ROW_MARK_INDEX}])`;
 
 export const ON_ROW_MARK_SELECTOR = `tbody td[${DATA_ROW_MARK_INDEX}]`;
 
-export const ON_CELL_MARK_SELECTOR = `thead td[${DATA_COL_MARK_INDEX}]`;
+export const ON_CELL_MARK_SELECTOR = `thead td[${DATA_COL_MARK_INDEX}], thead th[${DATA_COL_MARK_INDEX}]`;
 
-export const ON_SELECT_ALL_SELECTOR = `thead td[${SELECT_ALL}]`;
+export const ON_SELECT_ALL_SELECTOR = `thead td[${SELECT_ALL}], thead th[${SELECT_ALL}]`;
 
 
