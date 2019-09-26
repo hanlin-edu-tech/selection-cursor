@@ -35,7 +35,7 @@ class TableAdapter extends Adapter {
   }
 
   onMode(evt) {
-    evt.preventDefault();
+    //evt.preventDefault();
 
     let mode = this.getCurrentMode();
 
