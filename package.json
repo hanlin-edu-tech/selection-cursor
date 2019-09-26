@@ -1,6 +1,6 @@
 {
   "name": "selection-cursor",
-  "version":"0.1.0",
+  "version":"0.1.1",
   "author": "Sparrow.jang",
   "main":"dist/main.js",
   "description":"Decorate a selection cursor feature to element.",
