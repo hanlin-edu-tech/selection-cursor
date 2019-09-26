@@ -127,7 +127,7 @@ class TableAdapter extends Adapter {
     this.clearSelectedElements();
     let isFirstEl = true;
 
-    let els = this.getRootElement().querySelectorAll(`tbody td:not([${TABLE.DATA_ROW_MARK_INDEX}])`);
+    let els = this.getRootElement().querySelectorAll(`tbody td:not([${TABLE.DATA_ROW_MARK_INDEX}]):not([${TABLE.DATA_INGORE_CELL}])`);
 
     for (let el of els) {
 
@@ -240,7 +240,11 @@ class TableAdapter extends Adapter {
     vector.move(currentPoint, targetPoint);
 
     vector.forEachAsRectangle((x, y)=> {
-      this.selectedEl(this.getRootElement().querySelector(`td[${TABLE.DATA_ROW_INDEX}='${y}'][${TABLE.DATA_COL_INDEX}='${x}']`));
+      let el = this.getRootElement().querySelector(`td[${TABLE.DATA_ROW_INDEX}='${y}'][${TABLE.DATA_COL_INDEX}='${x}']:not([${TABLE.DATA_INGORE_CELL}])`);
+
+      if (el) {
+        this.selectedEl(el);
+      }
     });
 
   }
@@ -268,18 +272,25 @@ class TableAdapter extends Adapter {
 
   }
 
+  isSkip(el) {
+    return el.getAttributeNames().indexOf(TABLE.DATA_INGORE_CELL) != -1;
+  }
+
   selectedRow(currentEl, moveCursor = true) {
     let isFirstEl = true;
 
     while(currentEl = currentEl.nextElementSibling) {
 
-        if (isFirstEl && moveCursor) {
-          this.setCursorTarget(currentEl);
-          isFirstEl = false;
+        if (!this.isSkip(currentEl)) {
+
+          if (isFirstEl && moveCursor) {
+            this.setCursorTarget(currentEl);
+            isFirstEl = false;
+          }
+
+          this.selectedEl(currentEl);
+
         }
-
-        this.selectedEl(currentEl);
-
     }
 
   }
@@ -295,7 +306,7 @@ class TableAdapter extends Adapter {
   selectedCol(target, moveCursor = true) {
       let isFirstEl = true;
       let colMarkIndex = target.dataset.colMarkIndex;
-      let els = this.getRootElement().querySelectorAll(`tbody td[${TABLE.DATA_COL_INDEX}='${colMarkIndex}']`);
+      let els = this.getRootElement().querySelectorAll(`tbody td[${TABLE.DATA_COL_INDEX}='${colMarkIndex}']:not([${TABLE.DATA_INGORE_CELL}])`);
 
       for (let el of els) {
 
