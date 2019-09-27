@@ -122,6 +122,10 @@ class Adapter {
 
   }
 
+  onDeleteSelectedFields() {
+
+  }
+
 }
 
 export default Adapter;

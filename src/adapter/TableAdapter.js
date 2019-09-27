@@ -56,6 +56,13 @@ class TableAdapter extends Adapter {
     }
   }
 
+  onDeleteSelectedFields() {
+    let selectedFields = this.getSelectedFields();
+    selectedFields.forEach((selectedField)=> {
+      this._setSelectedFieldValue(selectedField, '');
+    });
+  }
+
   onCopy(evt) {
     let result = [];
     let selectedFields = this.getSelectedFields();

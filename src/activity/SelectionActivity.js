@@ -28,10 +28,13 @@ class SelectionActivity extends Observer {
 
   onKeydown(evt) {
 
-    let availableMode = this.keyModeMap.get(evt.which);
+    let which = evt.which;
+    let availableMode = this.keyModeMap.get(which);
   
     if (availableMode) {
       this.mode = availableMode;
+    } else if (which == 8) {
+      this.adapter.onDeleteSelectedFields();
     }
   }
 
