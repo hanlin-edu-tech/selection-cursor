@@ -111,6 +111,7 @@ class TableAdapter extends Adapter {
           }
         }
       }
+      event.preventDefault();
     }
   }
 
