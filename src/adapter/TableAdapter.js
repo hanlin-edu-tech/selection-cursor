@@ -5,6 +5,7 @@ import Range from './../Range';
 import * as STYLE from './../const/STYLE';
 import * as EVENT from './../const/EVENT';
 import * as TABLE from './../const/TABLE';
+import * as CLIPBOARD from './../const/CLIPBOARD';
 import Point from './../math/Point';
 import Vector from './../math/Vector'; 
 
@@ -21,6 +22,7 @@ class TableAdapter extends Adapter {
 
     if (defaultSelectedEl) {
       this.setCursorTarget(defaultSelectedEl);
+      defaultSelectedEl.focus();
     }
 
     this.events = {
@@ -32,6 +34,84 @@ class TableAdapter extends Adapter {
     this.refresh();
     this.registerEvent();
 
+  }
+
+  _getSelectedFieldValue(selectedField) {
+    let el = selectedField.el;
+    let input = el.querySelector('input, textarea');
+
+    if (input) {
+      return input.value;
+    }
+
+    return el.innerText;
+  }
+
+  _setSelectedFieldValue(selectedField, text) {
+    let el = selectedField.el;
+    let input = el.querySelector('input, textarea');
+
+    if (input) {
+      input.value = text;
+    }
+  }
+
+  onCopy(evt) {
+    let result = [];
+    let selectedFields = this.getSelectedFields();
+
+    let firstSelected = selectedFields[0];
+    
+    for (let selectedField of selectedFields) {
+      let currentRowIndex = selectedField.rowIndex - firstSelected.rowIndex;
+      let currentColIndex = selectedField.colIndex - firstSelected.colIndex;
+      let row = result[currentRowIndex] || [];
+      result[currentRowIndex] = row;
+      row[currentColIndex] = this._getSelectedFieldValue(selectedField);
+    }
+
+    if (result.length) {
+      evt.preventDefault();
+      let resultText = result.map((row)=> row.join(CLIPBOARD.TAB)).join(CLIPBOARD.NEWLINE);
+      evt.clipboardData.setData(CLIPBOARD.TEXT_PLAIN, resultText);
+    }
+  }
+
+  onPaste(evt) {
+    let resultText = evt.clipboardData.getData(CLIPBOARD.TEXT_PLAIN);
+    let rows = resultText.split(CLIPBOARD.NEWLINE).map((row)=> row.split(CLIPBOARD.TAB));
+
+    if (rows.length) {
+      let selectedFields = this.getSelectedFields();
+
+      if (rows.length == 1 && rows[0].length) {
+
+        selectedFields.forEach((selectedField)=> {
+          this._setSelectedFieldValue(selectedField, rows[0][0]);
+        });
+
+      } else {
+        let firstSelected = selectedFields[0];
+        let selectedFieldMap = {};
+
+        selectedFields.forEach((selectedField)=> {
+          selectedFieldMap[`${selectedField.rowIndex}-${selectedField.colIndex}`] = selectedField;
+        });
+
+        for (let rowIndex in rows) {
+          let row = rows[rowIndex];
+
+          for (let colIndex in row) {
+            let currentRowIndex = firstSelected.rowIndex + parseInt(rowIndex);
+            let currentColIndex = firstSelected.colIndex + parseInt(colIndex);
+            let selectedField = selectedFieldMap[`${currentRowIndex}-${currentColIndex}`];
+            if (selectedField) {
+              this._setSelectedFieldValue(selectedField, row[colIndex]);
+            }
+          }
+        }
+      }
+    }
   }
 
   onMode(evt) {
@@ -329,6 +409,13 @@ class TableAdapter extends Adapter {
 
     this.on(EVENT.MOUSE_DOWN, TABLE.ON_SELECT_ALL_SELECTOR, this.events.onSelectedAll);
 
+    //this.on(EVENT.COPY, 'td', (evt)=> {
+    /*document.body.addEventListener('copy', (evt)=> {
+      console.log(evt);
+      console.log(evt.clipboardData.setData('text/plain', 'test\ttest\n1231\t2131'));
+      evt.preventDefault();
+    });*/
+
   }
 
   refresh() {
@@ -357,11 +444,13 @@ class TableAdapter extends Adapter {
 
     for(let el of els) {
       result.push({
-        rowIndex:el.dataset.rowIndex,
-        colIndex:el.dataset.colIndex,
+        rowIndex:parseInt(el.dataset.rowIndex),
+        colIndex:parseInt(el.dataset.colIndex),
         el:el
       });
     }
+    result.sort((a,b)=> (a.rowIndex * 10 + a.colIndex) - (b.rowIndex * 10 + b.colIndex) )
+
     return result;
   }
 

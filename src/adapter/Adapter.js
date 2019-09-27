@@ -114,6 +114,14 @@ class Adapter {
     }
   }
 
+  onCopy() {
+
+  }
+
+  onPaste() {
+
+  }
+
 }
 
 export default Adapter;

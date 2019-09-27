@@ -15,7 +15,9 @@ class SelectionActivity extends Observer {
 
     this.events = {
       onKeydown:this.onKeydown.bind(this),
-      onKeyup:this.onKeyup.bind(this)
+      onKeyup:this.onKeyup.bind(this),
+      onPaste:this.onPaste.bind(this),
+      onCopy:this.onCopy.bind(this)
     };
 
     this.selection = new Selection();
@@ -41,6 +43,14 @@ class SelectionActivity extends Observer {
 
   }
 
+  onCopy(evt) {
+    this.adapter.onCopy(evt);
+  }
+
+  onPaste(evt) {
+    this.adapter.onPaste(evt);
+  }
+
   initKeyModeMap() {
     const map = new Map();
 
@@ -55,6 +65,8 @@ class SelectionActivity extends Observer {
 
     window.addEventListener('keydown', this.events.onKeydown);
     window.addEventListener('keyup', this.events.onKeyup);
+    document.body.addEventListener('copy', this.events.onCopy);
+    document.body.addEventListener('paste', this.events.onPaste);
 
   }
 
@@ -62,6 +74,8 @@ class SelectionActivity extends Observer {
 
     window.removeEventListener('keydown', this.events.onKeydown);
     window.removeEventListener('keyup', this.events.onKeyup);
+    document.body.removeEventListener('copy', this.events.onCopy);
+    document.body.removeEventListener('paste', this.events.onPaste);
     this.adapter.dispose();
 
   }
