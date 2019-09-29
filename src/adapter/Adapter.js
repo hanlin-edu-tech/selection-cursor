@@ -5,6 +5,10 @@ import * as STYLE from './../const/STYLE';
 
 class Adapter {
 
+  constructor(opts){
+    this.opts = opts;
+  }
+
   init() {
 
   }
@@ -125,6 +129,40 @@ class Adapter {
   onDeleteSelectedFields() {
 
   }
+
+  onBodyClick() {
+  
+  }
+
+  isFocusOnTheTable() {
+    return this._focusOnTable;
+    /*if (window.getSelection().rangeCount) {
+      let range = window.getSelection().getRangeAt(0);
+      let currentEl = range.startContainer;
+      let rootEl = this.getRootElement();
+
+      while(currentEl) {
+
+        if (currentEl === rootEl) {
+          return true;
+        }
+        currentEl = currentEl.parentElement;
+      }
+
+    }
+    return false;*/
+  }
+
+  focusTable() {
+    this._focusOnTable = true;
+    this.getRootElement().classList.add('focus');
+  }
+
+  unfocusTable() {
+    this._focusOnTable = false;
+    this.getRootElement().classList.remove('focus');
+  }
+
 
 }
 

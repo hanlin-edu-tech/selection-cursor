@@ -103,7 +103,7 @@
   <script src="main.js"></script>
   <script>
     let tableEl = document.querySelector('table');
-    let context = selectionCursor.default.build(tableEl);
+    let context = selectionCursor.default.build(tableEl, {globalClipboard:true});
     console.log(context);
   </script>
   </body>

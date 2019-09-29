@@ -2,6 +2,7 @@
 import Selection from './../Selection';
 import MODE from './../mode/index';
 import Observer from './../util/Observer';
+import * as EVENT from './../const/EVENT';
 
 class SelectionActivity extends Observer {
 
@@ -17,7 +18,8 @@ class SelectionActivity extends Observer {
       onKeydown:this.onKeydown.bind(this),
       onKeyup:this.onKeyup.bind(this),
       onPaste:this.onPaste.bind(this),
-      onCopy:this.onCopy.bind(this)
+      onCopy:this.onCopy.bind(this),
+      onBodyClick:this.onBodyClick.bind(this)
     };
 
     this.selection = new Selection();
@@ -46,6 +48,10 @@ class SelectionActivity extends Observer {
 
   }
 
+  onBodyClick(evt) {
+    this.adapter.onBodyClick(evt);
+  }
+
   onCopy(evt) {
     this.adapter.onCopy(evt);
   }
@@ -66,19 +72,21 @@ class SelectionActivity extends Observer {
 
   registerEvent() {
 
-    window.addEventListener('keydown', this.events.onKeydown);
-    window.addEventListener('keyup', this.events.onKeyup);
-    document.body.addEventListener('copy', this.events.onCopy);
-    document.body.addEventListener('paste', this.events.onPaste);
+    window.addEventListener(EVENT.KEYDOWN, this.events.onKeydown);
+    window.addEventListener(EVENT.KEYUP, this.events.onKeyup);
+    document.body.addEventListener(EVENT.COPY, this.events.onCopy);
+    document.body.addEventListener(EVENT.PASTE, this.events.onPaste);
+    document.body.addEventListener(EVENT.CLICK, this.events.onBodyClick);
 
   }
 
   dispose() {
 
-    window.removeEventListener('keydown', this.events.onKeydown);
-    window.removeEventListener('keyup', this.events.onKeyup);
-    document.body.removeEventListener('copy', this.events.onCopy);
-    document.body.removeEventListener('paste', this.events.onPaste);
+    window.removeEventListener(EVENT.KEYDOWN, this.events.onKeydown);
+    window.removeEventListener(EVENT.KEYUP, this.events.onKeyup);
+    document.body.removeEventListener(EVENT.COPY, this.events.onCopy);
+    document.body.removeEventListener(EVENT.PASTE, this.events.onPaste);
+    document.body.removeEventListener(EVENT.CLICK, this.events.onBodyClick);
     this.adapter.dispose();
 
   }

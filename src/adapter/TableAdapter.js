@@ -22,18 +22,23 @@ class TableAdapter extends Adapter {
 
     if (defaultSelectedEl) {
       this.setCursorTarget(defaultSelectedEl);
-      defaultSelectedEl.focus();
+      this.focusTable();
     }
 
     this.events = {
       onCell:this.onCell.bind(this),
       onRow:this.onRow.bind(this),
       onMode:this.onMode.bind(this),
-      onSelectedAll:this.onSelectedAll.bind(this)
+      onSelectedAll:this.onSelectedAll.bind(this),
+      onFocusTable:this.onFocusTable.bind(this)
     };
     this.refresh();
     this.registerEvent();
 
+  }
+
+  onBodyClick() {
+    this.unfocusTable();
   }
 
   _getSelectedFieldValue(selectedField) {
@@ -64,6 +69,8 @@ class TableAdapter extends Adapter {
   }
 
   onCopy(evt) {
+    if (!this.isFocusOnTheTable()) return;
+
     let result = [];
     let selectedFields = this.getSelectedFields();
 
@@ -85,6 +92,8 @@ class TableAdapter extends Adapter {
   }
 
   onPaste(evt) {
+    if (!this.isFocusOnTheTable()) return;
+
     let resultText = evt.clipboardData.getData(CLIPBOARD.TEXT_PLAIN);
     let rows = resultText.split(CLIPBOARD.NEWLINE).map((row)=> row.split(CLIPBOARD.TAB));
 
@@ -417,14 +426,15 @@ class TableAdapter extends Adapter {
 
     this.on(EVENT.MOUSE_DOWN, TABLE.ON_SELECT_ALL_SELECTOR, this.events.onSelectedAll);
 
-    //this.on(EVENT.COPY, 'td', (evt)=> {
-    /*document.body.addEventListener('copy', (evt)=> {
-      console.log(evt);
-      console.log(evt.clipboardData.setData('text/plain', 'test\ttest\n1231\t2131'));
-      evt.preventDefault();
-    });*/
+    this.on(EVENT.CLICK, this.events.onFocusTable);
 
   }
+
+  onFocusTable(evt) {
+    evt.stopPropagation();
+    this.focusTable();
+  }
+
 
   refresh() {
     let rows = this.getRootElement().querySelectorAll('tbody tr');
@@ -462,6 +472,14 @@ class TableAdapter extends Adapter {
     return result;
   }
 
+  isFocusOnTheTable() {
+    console.log(this.opts);
+    if (this.opts && this.opts.globalClipboard) {
+      return true;
+    }
+    return super.isFocusOnTheTable();
+  }
+
   dispose() {
 
     super.dispose();
@@ -475,6 +493,8 @@ class TableAdapter extends Adapter {
     this.off(EVENT.MOUSE_DOWN, TABLE.ON_CELL_MARK_SELECTOR, this.events.onCell);
 
     this.off(EVENT.MOUSE_DOWN, TABLE.ON_SELECT_ALL_SELECTOR, this.events.onSelectedAll);
+
+    this.off(EVENT.CLICK, this.events.onFocusTable);
 
   }
 

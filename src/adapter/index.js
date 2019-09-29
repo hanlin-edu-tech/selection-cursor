@@ -5,9 +5,9 @@ const adapterMap = {
   'table':TableAdapter
 };
 
-export const create = (type)=>{
+export const create = (type, opts)=>{
 
-  return new adapterMap[type];
+  return new adapterMap[type](opts);
 
 }
 
