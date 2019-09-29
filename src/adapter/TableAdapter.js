@@ -473,7 +473,6 @@ class TableAdapter extends Adapter {
   }
 
   isFocusOnTheTable() {
-    console.log(this.opts);
     if (this.opts && this.opts.globalClipboard) {
       return true;
     }
