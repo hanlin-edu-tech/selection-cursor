@@ -89,6 +89,8 @@ class TableAdapter extends Adapter {
       let resultText = result.map((row)=> row.join(CLIPBOARD.TAB)).join(CLIPBOARD.NEWLINE);
       evt.clipboardData.setData(CLIPBOARD.TEXT_PLAIN, resultText);
     }
+
+    this.activity.trigger(EVENT.COPIED);
   }
 
   onPaste(evt) {
@@ -128,6 +130,7 @@ class TableAdapter extends Adapter {
         }
       }
       event.preventDefault();
+      this.activity.trigger(EVENT.PASTED);
     }
   }
 

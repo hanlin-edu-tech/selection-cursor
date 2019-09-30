@@ -104,6 +104,12 @@
   <script>
     let tableEl = document.querySelector('table');
     let context = selectionCursor.default.build(tableEl, {globalClipboard:true});
+    context.on('pasted', function(){
+      console.log('pasted');
+    });
+    context.on('copied', function(){
+      console.log('copied');
+    });
     console.log(context);
   </script>
   </body>

@@ -6,3 +6,6 @@ export const PASTE = 'paste';
 export const KEYDOWN = 'keydown';
 export const KEYUP = 'keyup';
 
+export const COPIED = 'copied';
+export const PASTED = 'pasted';
+
