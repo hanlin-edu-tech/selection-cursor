@@ -8,4 +8,5 @@ export const KEYUP = 'keyup';
 
 export const COPIED = 'copied';
 export const PASTED = 'pasted';
+export const DELETE_FIELDS = 'deleteFields';
 

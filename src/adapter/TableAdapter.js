@@ -66,6 +66,7 @@ class TableAdapter extends Adapter {
     selectedFields.forEach((selectedField)=> {
       this._setSelectedFieldValue(selectedField, '');
     });
+    this.activity.trigger(EVENT.DELETE_FIELDS);
   }
 
   onCopy(evt) {
