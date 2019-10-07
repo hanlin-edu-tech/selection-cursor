@@ -19,4 +19,5 @@ export const ON_CELL_MARK_SELECTOR = `thead td[${DATA_COL_MARK_INDEX}], thead th
 
 export const ON_SELECT_ALL_SELECTOR = `thead td[${SELECT_ALL}], thead th[${SELECT_ALL}]`;
 
+export const INPUT_AREA_SELECTOR = `input,textarea`;
 

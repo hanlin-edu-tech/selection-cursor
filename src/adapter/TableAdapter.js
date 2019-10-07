@@ -30,7 +30,9 @@ class TableAdapter extends Adapter {
       onRow:this.onRow.bind(this),
       onMode:this.onMode.bind(this),
       onSelectedAll:this.onSelectedAll.bind(this),
-      onFocusTable:this.onFocusTable.bind(this)
+      onFocusTable:this.onFocusTable.bind(this),
+      onFocusinInput:this.onFocusinInput.bind(this),
+      onFocusoutInput:this.onFocusoutInput.bind(this),
     };
     this.refresh();
     this.registerEvent();
@@ -43,7 +45,7 @@ class TableAdapter extends Adapter {
 
   _getSelectedFieldValue(selectedField) {
     let el = selectedField.el;
-    let input = el.querySelector('input, textarea');
+    let input = el.querySelector(TABLE.INPUT_AREA_SELECTOR);
 
     if (input) {
       return input.value;
@@ -54,7 +56,7 @@ class TableAdapter extends Adapter {
 
   _setSelectedFieldValue(selectedField, text) {
     let el = selectedField.el;
-    let input = el.querySelector('input, textarea');
+    let input = el.querySelector(TABLE.INPUT_AREA_SELECTOR);
 
     if (input) {
       input.value = text;
@@ -63,10 +65,22 @@ class TableAdapter extends Adapter {
 
   onDeleteSelectedFields() {
     let selectedFields = this.getSelectedFields();
-    selectedFields.forEach((selectedField)=> {
-      this._setSelectedFieldValue(selectedField, '');
-    });
-    this.activity.trigger(EVENT.DELETE_FIELDS);
+
+    const clearSelectedFields = ()=> {
+      selectedFields.forEach((selectedField)=> {
+        this._setSelectedFieldValue(selectedField, '');
+      });
+    };
+
+
+    if (selectedFields.length  > 0) {
+      if (selectedFields.length == 1 && this._focusInput) {
+        //do nothing...
+      } else {
+        clearSelectedFields();
+        this.activity.trigger(EVENT.DELETE_FIELDS);
+      }
+    }
   }
 
   onCopy(evt) {
@@ -420,7 +434,19 @@ class TableAdapter extends Adapter {
       }
   }
 
+  onFocusinInput() {
+    this._focusInput = true;
+  }
+
+  onFocusoutInput() {
+    this._focusInput = false;
+  }
+
   registerEvent() {
+
+    this.on(EVENT.FOCUSIN, TABLE.INPUT_AREA_SELECTOR, this.events.onFocusinInput);
+
+    this.on(EVENT.FOCUSOUT, TABLE.INPUT_AREA_SELECTOR, this.events.onFocusoutInput);
 
     this.on(EVENT.MOUSE_DOWN, TABLE.ON_CELL_SELECTOR, this.events.onMode);
 
@@ -488,6 +514,10 @@ class TableAdapter extends Adapter {
     super.dispose();
 
     this.clearSelectedElements();
+
+    this.off(EVENT.FOCUSIN, TABLE.INPUT_AREA_SELECTOR, this.events.onFocusinInput);
+
+    this.off(EVENT.FOCUSOUT, TABLE.INPUT_AREA_SELECTOR, this.events.onFocusoutInput);
 
     this.off(EVENT.MOUSE_DOWN, TABLE.ON_CELL_SELECTOR, this.events.onMode);
 
